@@ -6,16 +6,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.concurrent.Executors;
 
-//@SpringBootApplication
+@SpringBootApplication
 public class PomodoroApplication {
 
 	public static void main(String[] args) {
-//		SpringApplication.run(PomodoroApplication.class, args);
-
-		for (int i = 0; i < 50; i++) {
-			Timer timer = new Timer(Executors.newScheduledThreadPool(1));
-			timer.start(10);
-		}
+		SpringApplication.run(PomodoroApplication.class, args);
 	}
 
 }

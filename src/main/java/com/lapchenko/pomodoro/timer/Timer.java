@@ -7,9 +7,9 @@ import java.util.concurrent.TimeUnit;
 public class Timer {
 
     private final ScheduledExecutorService scheduler;
-    private ScheduledFuture<?> scheduledFuture;
-    private long remainingTime;
     private final TimerObserver observer;
+    private ScheduledFuture<?> scheduledFuture;
+    private int remainingTime;
 
     public Timer(ScheduledExecutorService scheduler, TimerObserver observer) {
         this.scheduler = scheduler;
@@ -17,25 +17,33 @@ public class Timer {
     }
 
 
-    public void start(long durationSeconds) {
+    public void start(int durationSeconds) {
         this.remainingTime = durationSeconds;
         final Runnable timerTask = () -> {
             remainingTime--;
             if (remainingTime <= 0) {
                 scheduledFuture.cancel(true);
-                observer.timerStopped();
+                observer.timedOut();
             }
         };
         scheduledFuture = scheduler.scheduleWithFixedDelay(timerTask, 0, 1, TimeUnit.SECONDS);
-        observer.timerStarted();
+    }
+
+    public void resume() {
+        if (remainingTime > 0) {
+            start(remainingTime);
+        }
     }
 
 
     public void stop() {
         if (scheduledFuture != null) {
             scheduledFuture.cancel(true);
-            observer.timerStopped();
         }
+    }
+
+    public int getRemainingTime() {
+        return remainingTime;
     }
 }
 
