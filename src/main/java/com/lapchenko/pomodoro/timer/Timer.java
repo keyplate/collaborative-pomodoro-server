@@ -21,6 +21,7 @@ public class Timer {
         this.remainingTime = durationSeconds;
         final Runnable timerTask = () -> {
             remainingTime--;
+            observer.timeUpdated(remainingTime);
             if (remainingTime <= 0) {
                 scheduledFuture.cancel(true);
                 observer.timedOut();

@@ -1,47 +1,45 @@
 package com.lapchenko.pomodoro.pomodorotimer;
 
-import com.lapchenko.pomodoro.pomodorotimer.model.PomodoroConfig;
+import com.lapchenko.pomodoro.pomodorotimer.model.PomodoroUpdateMessage;
+import com.lapchenko.pomodoro.pomodorotimer.model.TimerUpdateMessage;
+import com.lapchenko.pomodoro.pomodorotimer.notifier.PomodoroNotifier;
 import com.lapchenko.pomodoro.timer.Timer;
 import com.lapchenko.pomodoro.timer.TimerManager;
 import com.lapchenko.pomodoro.timer.TimerObserver;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
-@Service
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PomodoroRoom implements TimerObserver {
-
-    private final TimerManager timerManager;
-    private PomodoroState currentPomodoro;
-    private PomodoroConfig pomodoroConfig;
-    private int breaksCounter;
     private Timer timer;
+    private final String roomId;
+    private PomodoroNotifier notifier;
 
-    public PomodoroRoom(TimerManager timerManager, PomodoroConfig pomodoroConfig) {
-        this.timer = timerManager.createTimer(this);
-        this.currentPomodoro = PomodoroState.FOCUS;
-        this.pomodoroConfig = pomodoroConfig;
-        this.timerManager = timerManager;
-        this.breaksCounter = 0;
+    public PomodoroRoom(String roomId, PomodoroNotifier notifier) {
+        this.timer = TimerManager.createTimer(this);
+        this.roomId = roomId;
+        this.notifier = notifier;
     }
 
-    public void startTimer() {
-        //todo if (not running)
-        timer.start(pomodoroConfig.sessionDurations().get(currentPomodoro));
-    }
-
-    public void nextSession() {
-        this.currentPomodoro = PomodoroState.getNext(currentPomodoro,
-                pomodoroConfig.breaksBeforeLongBreak(), breaksCounter);
-        startTimer();
+    public void startTimer(int duration) {
+        timer.start(duration);
+        notifier.publishPomodoroUpdate(roomId,
+                new PomodoroUpdateMessage(PomodoroState.START, String.valueOf(duration)));
     }
 
     public void pauseTimer() {
         timer.stop();
+        notifier.publishPomodoroUpdate(roomId,
+                new PomodoroUpdateMessage(PomodoroState.PAUSE, null));
+    }
+
+    @Override
+    public void timeUpdated(int remainingTime) {
+        notifier.publishTimerUpdate(roomId,
+                new TimerUpdateMessage(roomId, remainingTime));
+        System.out.printf("%s is running %d", roomId, remainingTime);
     }
 
     @Override
     public void timedOut() {
+        notifier.publishPomodoroUpdate(roomId,
+                new PomodoroUpdateMessage(PomodoroState.STOP, null));
     }
 }
