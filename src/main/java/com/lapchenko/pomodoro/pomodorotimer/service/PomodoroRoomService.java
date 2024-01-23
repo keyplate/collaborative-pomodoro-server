@@ -12,8 +12,8 @@ import java.util.UUID;
 @Service
 public class PomodoroRoomService {
 
-    private Map<String, PomodoroRoom> roomMap;
-    private PomodoroNotifier notifier;
+    private final Map<String, PomodoroRoom> roomMap;
+    private final PomodoroNotifier notifier;
 
     public PomodoroRoomService(PomodoroNotifier notifier) {
         this.roomMap = new HashMap<>();

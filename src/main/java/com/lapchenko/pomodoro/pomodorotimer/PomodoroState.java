@@ -5,5 +5,5 @@ public enum PomodoroState {
     STOP,
     PAUSE,
     RESUME,
-    ADJUST;
+    ADJUST
 }

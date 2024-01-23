@@ -8,9 +8,9 @@ import com.lapchenko.pomodoro.timer.TimerManager;
 import com.lapchenko.pomodoro.timer.TimerObserver;
 
 public class PomodoroRoom implements TimerObserver {
-    private Timer timer;
+    private final Timer timer;
     private final String roomId;
-    private PomodoroNotifier notifier;
+    private final PomodoroNotifier notifier;
 
     public PomodoroRoom(String roomId, PomodoroNotifier notifier) {
         this.timer = TimerManager.createTimer(this);
@@ -34,7 +34,6 @@ public class PomodoroRoom implements TimerObserver {
     public void timeUpdated(int remainingTime) {
         notifier.publishTimerUpdate(roomId,
                 new TimerUpdateMessage(roomId, remainingTime));
-        System.out.printf("%s is running %d", roomId, remainingTime);
     }
 
     @Override
