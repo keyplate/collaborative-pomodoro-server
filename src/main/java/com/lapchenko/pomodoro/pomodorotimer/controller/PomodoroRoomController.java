@@ -1,9 +1,10 @@
 package com.lapchenko.pomodoro.pomodorotimer.controller;
 
 import com.lapchenko.pomodoro.pomodorotimer.service.PomodoroRoomService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 public class PomodoroRoomController {
@@ -16,7 +17,12 @@ public class PomodoroRoomController {
 
     @PostMapping("/pomodoro-room")
     @ResponseBody
-    public String createRoom() {
-        return roomService.createRoom();
+    public ResponseEntity<Map> createRoom() {
+        return ResponseEntity.ok(Map.of("roomId", roomService.createRoom()));
+    }
+
+    @DeleteMapping("/pomodoro-room/{id}")
+    public ResponseEntity<?> deleteRoom(@PathVariable String id) {
+        return ResponseEntity.accepted().build();
     }
 }

@@ -27,6 +27,12 @@ public class PomodoroRoomService {
         return roomId;
     }
 
+    public void deleteRoom(String roomId) {
+        PomodoroRoom room = getRoomIfPresent(roomId);
+        //todo stop timer
+        roomMap.remove(roomId);
+    }
+
     public void startTimer(String roomId, int duration) {
         getRoomIfPresent(roomId).startTimer(duration);
     }
