@@ -1,7 +1,8 @@
 package com.lapchenko.pomodoro.pomodorotimer;
 
-import com.lapchenko.pomodoro.pomodorotimer.model.PomodoroUpdateMessage;
-import com.lapchenko.pomodoro.pomodorotimer.model.TimerUpdateMessage;
+import com.lapchenko.pomodoro.pomodorotimer.model.message.CurrentTimeUpdateMessage;
+import com.lapchenko.pomodoro.pomodorotimer.model.message.StartUpdateMessage;
+import com.lapchenko.pomodoro.pomodorotimer.model.message.StopUpdateMessage;
 import com.lapchenko.pomodoro.pomodorotimer.notifier.PomodoroNotifier;
 import com.lapchenko.pomodoro.timer.Timer;
 import com.lapchenko.pomodoro.timer.TimerManager;
@@ -20,25 +21,23 @@ public class PomodoroRoom implements TimerObserver {
 
     public void startTimer(int duration) {
         timer.start(duration);
-        notifier.publishPomodoroUpdate(roomId,
-                new PomodoroUpdateMessage(PomodoroState.START, String.valueOf(duration)));
+        notifier.publishPomodoroUpdate(roomId, new StartUpdateMessage(duration));
     }
 
     public void pauseTimer() {
         timer.stop();
         notifier.publishPomodoroUpdate(roomId,
-                new PomodoroUpdateMessage(PomodoroState.PAUSE, null));
+                new StopUpdateMessage());
     }
 
     @Override
     public void timeUpdated(int remainingTime) {
-        notifier.publishTimerUpdate(roomId,
-                new TimerUpdateMessage(roomId, remainingTime));
+        notifier.publishPomodoroUpdate(roomId,
+                new CurrentTimeUpdateMessage(remainingTime));
     }
 
     @Override
     public void timedOut() {
-        notifier.publishPomodoroUpdate(roomId,
-                new PomodoroUpdateMessage(PomodoroState.STOP, null));
+        //todo
     }
 }

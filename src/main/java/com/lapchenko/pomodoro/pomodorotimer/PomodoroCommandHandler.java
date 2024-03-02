@@ -1,6 +1,7 @@
 package com.lapchenko.pomodoro.pomodorotimer;
 
-import com.lapchenko.pomodoro.pomodorotimer.model.PomodoroUpdateMessage;
+import com.lapchenko.pomodoro.pomodorotimer.model.message.CommandMessage;
+import com.lapchenko.pomodoro.pomodorotimer.model.command.StartCommand;
 import com.lapchenko.pomodoro.pomodorotimer.service.PomodoroRoomService;
 import org.springframework.stereotype.Service;
 
@@ -13,15 +14,15 @@ public class PomodoroCommandHandler {
         this.roomService = roomService;
     }
 
-    public void handle(String roomId, PomodoroUpdateMessage message) {
+    public void handle(String roomId, CommandMessage message) {
         switch (message.command()) {
-            case START -> handleStart(roomId, message);
+            case START -> handleStart(roomId, (StartCommand) message.args());
             case PAUSE -> handlePause(roomId);
         }
     }
 
-    private void handleStart(String roomId, PomodoroUpdateMessage message) {
-        int duration = Integer.parseInt(message.argument());
+    private void handleStart(String roomId, StartCommand message) {
+        int duration = message.getDuration();
         roomService.startTimer(roomId, duration);
     }
 
