@@ -1,7 +1,8 @@
 package com.lapchenko.pomodoro.pomodorotimer.notifier;
 
-import com.lapchenko.pomodoro.pomodorotimer.model.PomodoroUpdateMessage;
-import com.lapchenko.pomodoro.pomodorotimer.model.TimerUpdateMessage;
+import com.lapchenko.pomodoro.pomodorotimer.model.message.UpdateMessage;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +15,9 @@ public class PomodoroNotifier {
         this.messagingTemplate = messagingTemplate;
     }
 
-    public void publishPomodoroUpdate(String roomId, PomodoroUpdateMessage message) {
-        messagingTemplate.convertAndSend("/topic/room/" + roomId, message);
-    }
-
-    public void publishTimerUpdate(String roomId, TimerUpdateMessage message) {
+    @SendTo("/topic/room/{roomId}")
+    public void publishPomodoroUpdate(@DestinationVariable("roomId") String roomId,
+                                      UpdateMessage message) {
         messagingTemplate.convertAndSend("/topic/room/" + roomId, message);
     }
 }
