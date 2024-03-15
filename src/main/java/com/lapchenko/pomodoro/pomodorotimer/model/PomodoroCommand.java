@@ -1,9 +1,8 @@
-package com.lapchenko.pomodoro.pomodorotimer;
+package com.lapchenko.pomodoro.pomodorotimer.model;
 
 public enum PomodoroCommand {
     START,
     STOP,
-    PAUSE,
     RESUME,
     ADJUST,
     NEXT_SESSION,

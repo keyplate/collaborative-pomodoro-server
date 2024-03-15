@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.lapchenko.pomodoro.pomodorotimer.PomodoroCommand;
+import com.lapchenko.pomodoro.pomodorotimer.model.PomodoroCommand;
 import com.lapchenko.pomodoro.pomodorotimer.model.message.CommandMessage;
 import com.lapchenko.pomodoro.pomodorotimer.model.command.StartCommand;
 import com.lapchenko.pomodoro.pomodorotimer.model.command.StopCommand;

@@ -4,10 +4,7 @@ import com.lapchenko.pomodoro.pomodorotimer.PomodoroRoom;
 import com.lapchenko.pomodoro.pomodorotimer.notifier.PomodoroNotifier;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class PomodoroRoomService {
@@ -34,11 +31,22 @@ public class PomodoroRoomService {
     }
 
     public void startTimer(String roomId, int duration) {
+        if (duration <= 0) {
+            throw new IllegalArgumentException("Room ID: " + roomId + " arg: " + duration);
+        }
         getRoomIfPresent(roomId).startTimer(duration);
     }
 
-    public void pauseTimer(String roomId) {
-        getRoomIfPresent(roomId).pauseTimer();
+    public void stopTimer(String roomId) {
+        getRoomIfPresent(roomId).stopTimer();
+    }
+
+    public Optional<PomodoroRoom> getRoomOptional(String roomId) {
+        try {
+            return Optional.of(getRoomIfPresent(roomId));
+        } catch (NoSuchElementException e) {
+            return Optional.empty();
+        }
     }
 
     private PomodoroRoom getRoomIfPresent(String roomId) {

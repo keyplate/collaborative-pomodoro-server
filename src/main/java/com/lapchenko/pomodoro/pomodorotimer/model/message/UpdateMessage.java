@@ -1,3 +1,5 @@
 package com.lapchenko.pomodoro.pomodorotimer.model.message;
 
-public class UpdateMessage {}
+import com.lapchenko.pomodoro.pomodorotimer.model.PomodoroUpdate;
+
+public record UpdateMessage(PomodoroUpdate update, Object args) {}

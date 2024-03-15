@@ -17,7 +17,7 @@ public class PomodoroCommandHandler {
     public void handle(String roomId, CommandMessage message) {
         switch (message.command()) {
             case START -> handleStart(roomId, (StartCommand) message.args());
-            case PAUSE -> handlePause(roomId);
+            case STOP -> handleStop(roomId);
         }
     }
 
@@ -26,7 +26,7 @@ public class PomodoroCommandHandler {
         roomService.startTimer(roomId, duration);
     }
 
-    private void handlePause(String roomId) {
-        roomService.pauseTimer(roomId);
+    private void handleStop(String roomId) {
+        roomService.stopTimer(roomId);
     }
 }

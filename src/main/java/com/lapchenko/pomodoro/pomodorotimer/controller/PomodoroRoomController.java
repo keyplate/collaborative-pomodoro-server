@@ -1,10 +1,12 @@
 package com.lapchenko.pomodoro.pomodorotimer.controller;
 
+import com.lapchenko.pomodoro.pomodorotimer.PomodoroRoom;
 import com.lapchenko.pomodoro.pomodorotimer.service.PomodoroRoomService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public class PomodoroRoomController {
@@ -13,6 +15,15 @@ public class PomodoroRoomController {
 
     public PomodoroRoomController(PomodoroRoomService roomService) {
         this.roomService = roomService;
+    }
+
+    @GetMapping("/pomodoro-room/{roomId}")
+    public ResponseEntity<?> getRoom(@PathVariable String roomId) {
+        Optional<PomodoroRoom> roomOptional = roomService.getRoomOptional(roomId);
+        if (roomOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(Map.of("roomId", roomId));
     }
 
     @PostMapping("/pomodoro-room")
