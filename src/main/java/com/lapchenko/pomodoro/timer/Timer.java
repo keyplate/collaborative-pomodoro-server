@@ -20,12 +20,12 @@ public class Timer {
     public void start(int durationSeconds) {
         this.remainingTime = durationSeconds;
         final Runnable timerTask = () -> {
-            remainingTime--;
-            observer.timeUpdated(remainingTime);
             if (remainingTime <= 0) {
                 scheduledFuture.cancel(true);
                 observer.timedOut();
             }
+            remainingTime--;
+            observer.timeUpdated(remainingTime);
         };
         scheduledFuture = scheduler.scheduleWithFixedDelay(timerTask, 0, 1, TimeUnit.SECONDS);
     }

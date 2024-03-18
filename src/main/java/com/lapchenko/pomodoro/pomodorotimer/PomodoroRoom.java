@@ -21,6 +21,9 @@ public class PomodoroRoom implements TimerObserver {
     }
 
     public void startTimer(int duration) {
+        if (duration <= 0) {
+            throw new IllegalArgumentException("Room ID: " + roomId + " arg: " + duration);
+        }
         if (!isTimerRunning) {
             timer.start(duration);
             notifier.publishPomodoroUpdate(roomId, new UpdateMessage(PomodoroUpdate.STARTED, duration));
@@ -34,6 +37,18 @@ public class PomodoroRoom implements TimerObserver {
             notifier.publishPomodoroUpdate(roomId, new UpdateMessage(PomodoroUpdate.PAUSED, null));
             isTimerRunning = false;
         }
+    }
+
+    public void adjustTimer(int adjustmentDuration) {
+        if (isTimerRunning) {
+            final int updatedDuration = timer.getRemainingTime() + adjustmentDuration;
+            timer.stop();
+            timer.start(updatedDuration);
+        }
+        /*  If anyone among users of the room adjusts time on the timer,
+         *  we want to see that adjustment both when timer is stopped and when it's running.
+         */
+        notifier.publishPomodoroUpdate(roomId, new UpdateMessage(PomodoroUpdate.DURATION_ADJUSTMENT, adjustmentDuration));
     }
 
     @Override

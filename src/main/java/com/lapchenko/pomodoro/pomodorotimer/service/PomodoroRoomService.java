@@ -25,20 +25,20 @@ public class PomodoroRoomService {
     }
 
     public void deleteRoom(String roomId) {
-        PomodoroRoom room = getRoomIfPresent(roomId);
-        //todo stop timer
+        getRoomIfPresent(roomId).stopTimer();
         roomMap.remove(roomId);
     }
 
     public void startTimer(String roomId, int duration) {
-        if (duration <= 0) {
-            throw new IllegalArgumentException("Room ID: " + roomId + " arg: " + duration);
-        }
         getRoomIfPresent(roomId).startTimer(duration);
     }
 
     public void stopTimer(String roomId) {
         getRoomIfPresent(roomId).stopTimer();
+    }
+
+    public void adjustTimer(String roomId, int adjustmentDuration) {
+        getRoomIfPresent(roomId).adjustTimer(adjustmentDuration);
     }
 
     public Optional<PomodoroRoom> getRoomOptional(String roomId) {

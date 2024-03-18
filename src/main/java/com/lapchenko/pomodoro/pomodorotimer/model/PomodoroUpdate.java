@@ -4,4 +4,5 @@ public enum PomodoroUpdate {
     TIME_UPDATE,
     STARTED,
     PAUSED,
+    DURATION_ADJUSTMENT,
 }
