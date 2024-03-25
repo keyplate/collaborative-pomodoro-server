@@ -25,15 +25,18 @@ public class PomodoroCommandHandler {
 
     private void handleStart(String roomId, StartCommand command) {
         int duration = command.getDuration();
-        roomService.startTimer(roomId, duration);
+        var roomOptional = roomService.getRoomOptional(roomId);
+        roomOptional.ifPresent((room) -> room.startTimer(duration));
     }
 
     private void handleStop(String roomId) {
-        roomService.stopTimer(roomId);
+        var roomOptional = roomService.getRoomOptional(roomId);
+        roomOptional.ifPresent(PomodoroRoom::stopTimer);
     }
 
     private void handleAdjust(String roomId, AdjustCommand command) {
         int adjustmentDuration = command.getAdjustmentDuration();
-        roomService.adjustTimer(roomId, adjustmentDuration);
+        var roomOptional = roomService.getRoomOptional(roomId);
+        roomOptional.ifPresent((room) -> room.adjustTimer(adjustmentDuration));
     }
 }

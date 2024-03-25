@@ -2,8 +2,10 @@ package com.lapchenko.pomodoro.pomodorotimer.service;
 
 import com.lapchenko.pomodoro.pomodorotimer.PomodoroRoom;
 import com.lapchenko.pomodoro.pomodorotimer.notifier.PomodoroNotifier;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -25,20 +27,20 @@ public class PomodoroRoomService {
     }
 
     public void deleteRoom(String roomId) {
-        getRoomIfPresent(roomId).stopTimer();
+        getRoomIfPresent(roomId).deleteTimer();
         roomMap.remove(roomId);
     }
 
-    public void startTimer(String roomId, int duration) {
-        getRoomIfPresent(roomId).startTimer(duration);
-    }
-
-    public void stopTimer(String roomId) {
-        getRoomIfPresent(roomId).stopTimer();
-    }
-
-    public void adjustTimer(String roomId, int adjustmentDuration) {
-        getRoomIfPresent(roomId).adjustTimer(adjustmentDuration);
+    @Scheduled(cron = "@hourly")
+    private void cleanUpUnusedRooms() {
+        List<String> roomsToDelete = new ArrayList<>();
+        LocalDateTime considerIdleTime = LocalDateTime.now().minusHours(1);
+        roomMap.forEach((key, value) -> {
+            if (value.getLastActivity().isBefore(considerIdleTime)) {
+                roomsToDelete.add(key);
+            }
+        });
+        roomsToDelete.forEach(this::deleteRoom);
     }
 
     public Optional<PomodoroRoom> getRoomOptional(String roomId) {
@@ -53,7 +55,12 @@ public class PomodoroRoomService {
         if (!roomMap.containsKey(roomId)) {
             throw new NoSuchElementException("Room ID: " + roomId);
         }
-        return roomMap.get(roomId);
+        var room = roomMap.get(roomId);
+        updateRoomLastAccessTime(room);
+        return room;
     }
 
+    private void updateRoomLastAccessTime(PomodoroRoom room) {
+        room.setLastActivity();
+    }
 }

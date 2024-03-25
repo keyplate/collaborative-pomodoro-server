@@ -23,6 +23,7 @@ public class Timer {
             if (remainingTime <= 0) {
                 scheduledFuture.cancel(true);
                 observer.timedOut();
+                return;
             }
             remainingTime--;
             observer.timeUpdated(remainingTime);

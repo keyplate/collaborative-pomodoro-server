@@ -5,4 +5,6 @@ public enum PomodoroUpdate {
     STARTED,
     PAUSED,
     DURATION_ADJUSTMENT,
+    TIMED_OUT,
+    ROOM_CLOSED,
 }
